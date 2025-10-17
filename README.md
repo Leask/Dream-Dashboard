@@ -2,6 +2,8 @@
 
 Terminal dashboard for real-time UniFi gateway throughput, latency, infrastructure inventory, and client activity.
 
+<img width="1498" height="1494" alt="Screenshot 2025-10-17 at 1 30 22 AM" src="https://github.com/user-attachments/assets/74a80443-0f7c-47b7-af2e-bfaeca7ff34a" />
+
 ## Requirements
 
 - Node.js 18 or newer.
