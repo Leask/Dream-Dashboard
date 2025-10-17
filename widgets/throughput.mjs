@@ -3,7 +3,7 @@ import { axisTime, getMaxMin } from '../lib/func.mjs';
 const asMbps = (bps = 0) => Number((bps / 1_000_000).toFixed(2));
 
 export const { layout, type, config, render } = {
-    layout: [0, 0, 9, 12],
+    layout: [0, 3, 9, 9],
     type: 'line',
     config: {
         label: 'Gateway Throughput (Mbps)',

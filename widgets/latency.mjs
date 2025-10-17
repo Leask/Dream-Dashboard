@@ -1,7 +1,7 @@
 import { axisTime, getMaxMin } from '../lib/func.mjs';
 
 export const { layout, type, config, render } = {
-    layout: [9, 3, 3, 3],
+    layout: [5, 0, 4, 3],
     type: 'line',
     config: {
         label: 'Latency (ms)',

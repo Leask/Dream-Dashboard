@@ -1,5 +1,5 @@
 export const { layout, type, config, render } = {
-    layout: [9, 6, 3, 3],
+    layout: [9, 0, 3, 6],
     type: 'table',
     config: {
         label: 'Active Clients',

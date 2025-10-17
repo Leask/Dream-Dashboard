@@ -46,7 +46,7 @@ const formatBytes = (bytes) => {
 };
 
 export const { layout, type, config, render } = {
-    layout: [9, 0, 3, 3],
+    layout: [0, 0, 5, 3],
     type: 'markdown',
     config: { fg: 'green', selectedFg: 'green', label: 'UniFi Gateway' },
     render: (status, instant) => {
