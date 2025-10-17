@@ -51,8 +51,12 @@ npm install
 
 ```console
 npm start
-# or
-npx dream-dashboard
+```
+
+or
+
+```console
+npx dream-dashboard --api-key=YOUTR_KEY
 ```
 
 The dashboard polls the UniFi Network Application every second (mainly `/proxy/network/api/s/<site>/stat/health`) and draws:
