@@ -4,16 +4,16 @@
   "version": "1990.1.3",
   "private": false,
   "homepage": "https://github.com/Leask/Dream-Dashboard#readme",
-  "main": "index.mjs",
+  "main": "dashboard.mjs",
   "bin": {
-    "slss": "index.mjs"
+    "dashboard": "dashboard.mjs"
   },
   "engines": {
     "node": ">=18.x"
   },
   "scripts": {
-    "start": "node --no-deprecation index.mjs",
-    "debug": "node --inspect --trace-warnings index.mjs",
+    "start": "node --no-deprecation dashboard.mjs",
+    "debug": "node --inspect --trace-warnings dashboard.mjs",
     "test": "echo \"Error: no test specified\" && exit 1",
     "ncuinit": "npm install -g npm-check-updates",
     "updep": "npx ncu -u && npm install && ( git commit -am 'update dependencies' || true )",

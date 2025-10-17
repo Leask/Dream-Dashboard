@@ -23,21 +23,46 @@ const formatAgo = (time) => {
     return `${hours}h ago`;
 };
 
+const formatPercent = (value) => {
+    if (value === null || value === undefined) { return 'N/A'; }
+    const num = Number(value);
+    if (Number.isNaN(num)) { return 'N/A'; }
+    const precision = num >= 100 || num % 1 === 0 ? 0 : 1;
+    return `${num.toFixed(precision)}%`;
+};
+
+const formatBytes = (bytes) => {
+    if (bytes === null || bytes === undefined) { return 'N/A'; }
+    if (!Number.isFinite(bytes) || bytes <= 0) { return '0 B'; }
+    const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+    let idx = 0;
+    let value = bytes;
+    while (value >= 1000 && idx < units.length - 1) {
+        value /= 1000;
+        idx += 1;
+    }
+    const precision = value >= 10 ? 2 : 2;
+    return `${value.toFixed(precision)} ${units[idx]}`;
+};
+
 export const { layout, type, config, render } = {
     layout: [9, 0, 3, 4],
     type: 'markdown',
     config: { fg: 'green', selectedFg: 'green', label: 'UniFi Gateway' },
     render: (status, instant) => {
         const last = getLastEntry(status);
+        const usage = status?.info?.monthlyUsage;
         const lines = [
             `**Gateway**: ${status?.info?.gateway || 'unknown'}`,
             `**Site**: ${status?.info?.site || 'default'}`,
             `**WAN Status**: ${status?.info?.wanStatus || 'unknown'}`,
+            `**ISP**: ${status?.info?.isp || 'unknown'}`,
+            `**WAN IP**: ${status?.info?.wanIp || 'unknown'}`,
+            `**Uptime**: ${formatPercent(status?.info?.uptime)}`,
             `**Updated**: ${last?.time ? last.time.toLocaleTimeString() : 'never'} (${formatAgo(last?.time)})`,
-            `**Download**: ${formatRate(last?.downloadBps)}`,
-            `**Upload**: ${formatRate(last?.uploadBps)}`,
+            `**Throughput**: Down ${formatRate(last?.downloadBps)}, Up ${formatRate(last?.uploadBps)}`,
             `**Latency**: ${formatLatency(last?.latencyMs)}`,
-            `**Samples cached**: ${(status?.metrics || []).length}`,
+            `**Monthly Data Usage**: ${formatBytes(usage?.totalBytes)}`,
         ];
         instant.setMarkdown(lines.join('\n'));
     },

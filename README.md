@@ -37,6 +37,8 @@ npm install
 
 ```console
 npm start
+# or
+npx dashboard
 ```
 
 The dashboard polls the UniFi Network Application `stat/health` endpoint every second (via the local gateway at `/proxy/network/api/s/<site>/stat/health`) and draws:
@@ -48,6 +50,6 @@ The dashboard polls the UniFi Network Application `stat/health` endpoint every s
 
 ## Notes
 
-- Metrics are fetched with the UniFi Site Manager API (`/proxy/network/v2/api`).
+- Metrics are fetched with the UniFi Site Manager API (`/proxy/network/api/s/<site>/stat/health`).
 - Self-signed certificates are accepted by default; set `verifySsl` to `true` to enforce TLS validation.
 - Ensure the API key has permissions to read internet metrics for the selected site.

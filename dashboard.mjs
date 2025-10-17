@@ -7,7 +7,7 @@ import contrib from 'blessed-contrib';
 import { utilitas } from 'utilitas';
 import { maxStatus } from './lib/func.mjs';
 import { loadConfig } from './lib/config.mjs';
-import { watchStatus } from './lib/slss.mjs';
+import { watchStatus } from './lib/dashboard.mjs';
 
 const { __dirname } = utilitas.__(import.meta.url);
 const screen = blessed.screen();
@@ -18,7 +18,15 @@ const config = loadConfig();
 const status = {
     metrics: [],
     logs: [],
-    info: { gateway: config.gateway, site: config.site },
+    info: {
+        gateway: config.gateway,
+        site: config.site,
+        wanStatus: null,
+        isp: null,
+        wanIp: null,
+        uptime: null,
+        monthlyUsage: null,
+    },
     lastUpdated: null,
     raw: null,
 };
@@ -64,6 +72,10 @@ const renderAll = (resp, err) => {
         status.lastUpdated = latestTime || status.lastUpdated;
         status.raw = resp.raw;
         status.info.wanStatus = latestPoint?.status || resp.status || status.info.wanStatus;
+        if (resp.isp) { status.info.isp = resp.isp; }
+        if (resp.wanIp) { status.info.wanIp = resp.wanIp; }
+        if (resp.uptime !== undefined) { status.info.uptime = resp.uptime; }
+        if (resp.monthlyUsage) { status.info.monthlyUsage = resp.monthlyUsage; }
     }
     if (err) {
         status.logs.push({ time: new Date(), message: err.message, error: true });
