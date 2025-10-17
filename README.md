@@ -37,8 +37,8 @@ Create or edit whichever file suits your workflow (local or `~/.dream-dashboard.
 CLI overrides use the same keys in kebab- or camel-case form. Examples:
 
 ```console
-npm start -- --api-key=YOUR_KEY --gateway=192.168.1.1
-node -- dashboard.mjs --site=prod --verify-ssl=true
+npm start --api-key=YOUR_KEY --gateway=192.168.1.1
+node dashboard.mjs --site=prod --verify-ssl=true
 ```
 
 ## Install
