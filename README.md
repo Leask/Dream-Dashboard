@@ -1,4 +1,4 @@
-# UniFi Gateway Traffic Dashboard
+# UniFi Gateway Dashboard
 
 Terminal dashboard for real-time UniFi gateway throughput, latency, infrastructure inventory, and client activity.
 
