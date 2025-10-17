@@ -1,7 +1,7 @@
 {
   "name": "dream-dashboard",
   "description": "Dream Dashboard is a terminal dashboard for monitoring your Unifi gateway.",
-  "version": "1990.1.4",
+  "version": "1990.1.5",
   "private": false,
   "homepage": "https://github.com/Leask/Dream-Dashboard#readme",
   "main": "dashboard.mjs",
