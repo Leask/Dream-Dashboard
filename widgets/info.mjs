@@ -24,7 +24,7 @@ const formatAgo = (time) => {
 };
 
 export const { layout, type, config, render } = {
-    layout: [0, 0, 4, 12],
+    layout: [8, 0, 4, 4],
     type: 'markdown',
     config: { fg: 'green', selectedFg: 'green', label: 'UniFi Gateway' },
     render: (status, instant) => {
