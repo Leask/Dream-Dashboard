@@ -4,7 +4,7 @@ export const { layout, type, config, render } = {
     config: {
         label: 'Active Clients',
         columnSpacing: 2,
-        columnWidth: [20, 18, 20],
+        columnWidth: [24, 20, 24],
         style: {
             fg: 'green',
             border: { fg: 'green' },
@@ -21,7 +21,7 @@ export const { layout, type, config, render } = {
             });
             return;
         }
-        const rows = clients.slice(0, 6).map(client => {
+        const rows = clients.map(client => {
             const name = (client?.name || client?.ip || client?.mac || 'Unknown').slice(0, 18);
             const ip = client?.ip || (client?.isWired ? 'wired' : 'wireless');
             const down = formatBytes(client?.rxBytes || 0);
