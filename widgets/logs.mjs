@@ -1,22 +1,27 @@
-import { getLastAntenna } from '../lib/func.mjs';
-
-const ignore = [
-    'killed', 'code', 'signal', 'cmd', 'stdout',
-    'stderr', 'deviceInfo', 'obstructionStats'
-];
+const formatLog = (entry) => {
+    if (!entry) { return null; }
+    const timestamp = entry.time instanceof Date
+        ? entry.time.toLocaleTimeString()
+        : new Date(entry.time || Date.now()).toLocaleTimeString();
+    const message = entry.message || JSON.stringify(entry);
+    const prefix = entry.error ? '[!]' : '[i]';
+    return `${timestamp} ${prefix} ${message}`;
+};
 
 export const { layout, type, config, render } = {
-    layout: [10, 0, 2, 12],
+    layout: [10, 6, 2, 6],
     type: 'log',
-    config: { fg: 'green', selectedFg: 'green', label: 'Logs' },
-    render: (sus, instant) => {
-        let s = getLastAntenna(sus, 'logs');
-        if (!s) { return; }
-        if (Error.isError(s)) {
-            s = { time: new Date(), ...s, message: s.stderr || s.message };
+    config: { fg: 'green', selectedFg: 'green', label: 'Events' },
+    render: (status, instant) => {
+        const items = (status?.logs || [])
+            .map(formatLog)
+            .filter(Boolean)
+            .slice(-50);
+        if (instant.setItems) {
+            instant.setItems(items);
+        } else {
+            instant.clearItems?.();
+            items.forEach(line => instant.log(line));
         }
-        const l = JSON.parse(JSON.stringify(s));
-        ignore.map(x => { try { delete l[x]; } catch (e) { } });
-        instant.log(JSON.stringify(l));
     },
 };

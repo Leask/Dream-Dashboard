@@ -1,23 +1,53 @@
-# `S`tar`L`ink `S`ignal `S`tatus 🛰️
+# UniFi Gateway Traffic Dashboard
 
-[Starlink](https://starlink.com/) Signal Status Dashboard in your terminal.
+Terminal dashboard for real-time UniFi gateway throughput, latency, and event monitoring.
 
-<img width="1920" alt="Screen Shot 2021-03-20 at 12 40 00 AM 1" src="https://user-images.githubusercontent.com/233022/111859138-02d89900-8915-11eb-919f-3d5b59699c78.png">
+## Requirements
 
-## Requirement
+- Node.js 18 or newer.
+- A UniFi OS Console or Gateway running the Site Manager API.
+- A valid Site Manager API key stored in `config.json` at the project root.
+- Local network access to the UniFi gateway (the app will auto-discover the default gateway IP).
 
-1. You can use `slss` dashboard only in the Starlink network.
+## Configuration
 
-1. This project depends on [grpcurl](https://github.com/fullstorydev/grpcurl). Please follow the link and install `grpcurl` first.
+Create or edit `config.json` before launching:
+
+```json
+{
+  "apiKey": "YOUR_UNIFI_API_KEY",
+  "site": "default",
+  "gateway": null,
+  "verifySsl": false
+}
+```
+
+- `apiKey` *(required)* – UniFi Site Manager API key.
+- `site` *(optional)* – Site identifier, defaults to `default`.
+- `gateway` *(optional)* – Override the auto-discovered gateway IP.
+- `verifySsl` *(optional)* – Set `true` if the gateway presents a trusted certificate.
 
 ## Install
 
 ```console
-npm install -g slss
+npm install
 ```
 
-## Launch
+## Run
 
 ```console
-slss
+npm start
 ```
+
+The dashboard polls the UniFi Network Application `stat/health` endpoint every second (via the local gateway at `/proxy/network/api/s/<site>/stat/health`) and draws:
+
+- Gateway summary with live download/upload rates and latency.
+- Throughput line chart (download vs upload in Mbps).
+- Latency timeline (when reported by the API).
+- Event log for successful updates and any API errors.
+
+## Notes
+
+- Metrics are fetched with the UniFi Site Manager API (`/proxy/network/v2/api`).
+- Self-signed certificates are accepted by default; set `verifySsl` to `true` to enforce TLS validation.
+- Ensure the API key has permissions to read internet metrics for the selected site.

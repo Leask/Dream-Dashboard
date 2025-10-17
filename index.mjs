@@ -1,26 +1,33 @@
 #!/usr/bin/env node
 
 import { join } from 'path';
-import { maxStatus } from './lib/func.mjs';
 import { readdirSync } from 'fs';
-import { satellites } from 'starlinkapi';
-import { utilitas } from 'utilitas';
-import { watchStatus } from './lib/slss.mjs';
 import blessed from 'blessed';
 import contrib from 'blessed-contrib';
+import { utilitas } from 'utilitas';
+import { maxStatus } from './lib/func.mjs';
+import { loadConfig } from './lib/config.mjs';
+import { watchStatus } from './lib/slss.mjs';
 
 const { __dirname } = utilitas.__(import.meta.url);
 const screen = blessed.screen();
-const grid = new contrib.grid({ rows: 12, cols: 12, screen: screen });
+const grid = new contrib.grid({ rows: 12, cols: 12, screen });
 const widgetsPath = join(__dirname, 'widgets');
 const widgets = {};
-const status = { antenna: [], satellites: [], logs: [], iS: 0, cS: [] };
+const config = loadConfig();
+const status = {
+    metrics: [],
+    logs: [],
+    info: { gateway: config.gateway, site: config.site },
+    lastUpdated: null,
+    raw: null,
+};
 
 const widgetFiles = (readdirSync(widgetsPath) || []).filter(
     file => /\.mjs$/i.test(file) && file.indexOf('.') !== 0
 );
 
-for (let file of widgetFiles) {
+for (const file of widgetFiles) {
     const name = file.replace(/^(.*)\.mjs$/i, '$1');
     widgets[name] = { ...await import(join(widgetsPath, file)) };
     widgets[name].instant = grid.set(
@@ -30,20 +37,51 @@ for (let file of widgetFiles) {
     );
 }
 
+const mergeMetrics = (existing = [], incoming = []) => {
+    const merged = new Map();
+    for (const point of existing) {
+        merged.set(point.time.getTime(), point);
+    }
+    for (const point of incoming) {
+        merged.set(point.time.getTime(), point);
+    }
+    return Array.from(merged.values())
+        .sort((a, b) => a.time.getTime() - b.time.getTime())
+        .slice(-maxStatus);
+};
+
 const renderAll = (resp, err) => {
-    resp && status.antenna.push(resp);
-    (resp || err) && status.logs.push(resp || err);
-    while (status.antenna.length > maxStatus) { status.antenna.shift(); }
-    for (let i in widgets) { widgets[i].render(status, widgets[i].instant); };
+    if (resp?.points?.length) {
+        status.metrics = mergeMetrics(status.metrics, resp.points);
+        const latestPoint = resp.points[resp.points.length - 1];
+        const latestTime = latestPoint?.time;
+        if (latestTime && (!status.lastUpdated || latestTime.getTime() !== status.lastUpdated.getTime())) {
+            status.logs.push({
+                time: new Date(),
+                message: `Received metrics up to ${latestTime.toLocaleTimeString()}`,
+            });
+        }
+        status.lastUpdated = latestTime || status.lastUpdated;
+        status.raw = resp.raw;
+        status.info.wanStatus = latestPoint?.status || resp.status || status.info.wanStatus;
+    }
+    if (err) {
+        status.logs.push({ time: new Date(), message: err.message, error: true });
+    }
+    while (status.logs.length > maxStatus) { status.logs.shift(); }
+    for (const key of Object.keys(widgets)) {
+        widgets[key].render(status, widgets[key].instant);
+    }
     screen.render();
 };
 
-screen.key(['escape', 'q', 'C-c'], function(c, k) { return process.exit(0); });
+screen.key(['escape', 'q', 'C-c'], () => process.exit(0));
 
-screen.on('resize', function(e) {
-    for (let i in widgets) { widgets[i].instant.emit('attach'); };
+screen.on('resize', () => {
+    for (const key of Object.keys(widgets)) {
+        widgets[key].instant.emit('attach');
+    }
     renderAll();
 });
 
 await watchStatus(renderAll);
-status.satellites = await satellites();

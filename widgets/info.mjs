@@ -1,30 +1,44 @@
-import { getLastAntenna } from '../lib/func.mjs';
-import moment from 'moment';
+import { getLastEntry } from '../lib/func.mjs';
 
-const formatPercent = num => Math.round(num * 100) / 100 + ' %';
-const formatTime = t => moment(Date.now() - (t || 0) * 1000).fromNow().replace(/ ago$/i, '');
+const formatRate = (bps = 0) => {
+    if (!bps) { return '0 Mbps'; }
+    const mbps = bps / 1_000_000;
+    return `${mbps.toFixed(mbps >= 10 ? 1 : 2)} Mbps`;
+};
+
+const formatLatency = (latency) => {
+    if (latency === null || latency === undefined) { return 'N/A'; }
+    const value = Number(latency);
+    return Number.isNaN(value) ? 'N/A' : `${value.toFixed(2)} ms`;
+};
+
+const formatAgo = (time) => {
+    if (!time) { return 'never'; }
+    const diff = Math.max(0, Date.now() - time.getTime());
+    const seconds = Math.round(diff / 1000);
+    if (seconds < 60) { return `${seconds}s ago`; }
+    const minutes = Math.round(seconds / 60);
+    if (minutes < 60) { return `${minutes}m ago`; }
+    const hours = Math.round(minutes / 60);
+    return `${hours}h ago`;
+};
 
 export const { layout, type, config, render } = {
-    layout: [0, 0, 4, 4],
+    layout: [0, 0, 4, 12],
     type: 'markdown',
-    config: { fg: 'green', selectedFg: 'green', label: 'Starlink' },
+    config: { fg: 'green', selectedFg: 'green', label: 'UniFi Gateway' },
     render: (status, instant) => {
-        const stat = getLastAntenna(status);
-        if (!stat) { return; }
-        const u = stat.deviceState.uptimeS;
-        const o = stat?.obstructionStats;
-        const [log, arrLog] = [{
-            'Device ID': stat.deviceInfo.id,
-            'Hardware Version': stat.deviceInfo.hardwareVersion,
-            'Software Version': stat.deviceInfo.softwareVersion,
-            'Country Code': stat.deviceInfo.countryCode,
-            'Uptime': formatTime(u),
-            'State': stat.state,
-            'Currently Obstructed': !!o?.currentlyObstructed,
-            'Obstructed Time': formatPercent((u - (o?.validS || 0)) / u * 100),
-            'Last 24 Hour Obstructed': formatTime(o?.last24hObstructedS),
-        }, []];
-        for (let i in log) { arrLog.push(`${i}: ${log[i]}`); }
-        instant.setMarkdown(arrLog.join('\n'));
+        const last = getLastEntry(status);
+        const lines = [
+            `**Gateway**: ${status?.info?.gateway || 'unknown'}`,
+            `**Site**: ${status?.info?.site || 'default'}`,
+            `**WAN Status**: ${status?.info?.wanStatus || 'unknown'}`,
+            `**Updated**: ${last?.time ? last.time.toLocaleTimeString() : 'never'} (${formatAgo(last?.time)})`,
+            `**Download**: ${formatRate(last?.downloadBps)}`,
+            `**Upload**: ${formatRate(last?.uploadBps)}`,
+            `**Latency**: ${formatLatency(last?.latencyMs)}`,
+            `**Samples cached**: ${(status?.metrics || []).length}`,
+        ];
+        instant.setMarkdown(lines.join('\n'));
     },
 };
