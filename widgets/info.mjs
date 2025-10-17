@@ -60,7 +60,8 @@ export const { layout, type, config, render } = {
             `**WAN IP**: ${status?.info?.wanIp || 'unknown'}`,
             `**Uptime**: ${formatPercent(status?.info?.uptime)}`,
             `**Updated**: ${last?.time ? last.time.toLocaleTimeString() : 'never'} (${formatAgo(last?.time)})`,
-            `**Throughput**: ↓${formatRate(last?.downloadBps)} / ↑${formatRate(last?.uploadBps)}`,
+            `**Throughput ↓**: ${formatRate(last?.downloadBps)}`,
+            `**Throughput ↑**: ${formatRate(last?.uploadBps)}`,
             `**Latency**: ${formatLatency(last?.latencyMs)}`,
             `**Monthly Data Usage**: ${formatBytes(usage?.totalBytes)}`,
         ];

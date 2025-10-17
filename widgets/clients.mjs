@@ -24,9 +24,9 @@ export const { layout, type, config, render } = {
         const rows = clients.map(client => {
             const name = (client?.name || client?.ip || client?.mac || 'Unknown').slice(0, 18);
             const ip = client?.ip || (client?.isWired ? 'wired' : 'wireless');
-            const down = formatBytes(client?.rxBytes || 0);
-            const up = formatBytes(client?.txBytes || 0);
-            return [name, ip, `↓${down} ↑${up}`];
+            const down = formatBytes(client?.rxBytes || 0, true);
+            const up = formatBytes(client?.txBytes || 0, true);
+            return [name, ip, `↓ ${down} / ↑ ${up}`];
         });
         instant.setData({
             headers: ['Client', 'IP', 'Usage'],
@@ -35,8 +35,8 @@ export const { layout, type, config, render } = {
     },
 };
 
-function formatBytes(bytes = 0) {
-    if (!Number.isFinite(bytes) || bytes <= 0) { return '0B'; }
+function formatBytes(bytes = 0, spaced = false) {
+    if (!Number.isFinite(bytes) || bytes <= 0) { return spaced ? '0 B' : '0B'; }
     const units = ['B', 'KB', 'MB', 'GB', 'TB'];
     let value = bytes;
     let index = 0;
@@ -45,5 +45,7 @@ function formatBytes(bytes = 0) {
         index += 1;
     }
     const precision = value >= 10 ? 1 : 2;
-    return `${value.toFixed(precision)}${units[index]}`;
+    return spaced
+        ? `${value.toFixed(precision)} ${units[index]}`
+        : `${value.toFixed(precision)}${units[index]}`;
 }
