@@ -1,10 +1,10 @@
 export const { layout, type, config, render } = {
-    layout: [9, 8, 3, 2],
+    layout: [9, 6, 3, 3],
     type: 'table',
     config: {
         label: 'Active Clients',
         columnSpacing: 2,
-        columnWidth: [14, 10, 12],
+        columnWidth: [20, 18, 20],
         style: {
             fg: 'green',
             border: { fg: 'green' },

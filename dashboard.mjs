@@ -19,7 +19,6 @@ const status = {
     metrics: [],
     logs: [],
     clients: [],
-    applications: [],
     info: {
         gateway: config.gateway,
         site: config.site,
@@ -31,7 +30,6 @@ const status = {
     },
     errors: {
         clients: null,
-        applications: null,
     },
     lastUpdated: null,
     raw: null,
@@ -86,10 +84,6 @@ const renderAll = (resp, err) => {
     if (resp?.clients) {
         status.clients = resp.clients.items || [];
         status.errors.clients = resp.clients.error || null;
-    }
-    if (resp?.applications) {
-        status.applications = resp.applications.items || [];
-        status.errors.applications = resp.applications.error || null;
     }
     if (err) {
         status.logs.push({ time: new Date(), message: err.message, error: true });

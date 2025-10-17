@@ -9,7 +9,7 @@ const formatLog = (entry) => {
 };
 
 export const { layout, type, config, render } = {
-    layout: [9, 6, 3, 2],
+    layout: [9, 9, 3, 3],
     type: 'log',
     config: { fg: 'green', selectedFg: 'green', label: 'Events' },
     render: (status, instant) => {
