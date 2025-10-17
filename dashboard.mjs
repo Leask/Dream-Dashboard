@@ -14,6 +14,10 @@ const screen = blessed.screen();
 const grid = new contrib.grid({ rows: 12, cols: 12, screen });
 const widgetsPath = join(__dirname, 'widgets');
 const widgets = {};
+const limitedLayouts = {
+    info: [0, 0, 12, 3],
+    throughput: [0, 3, 12, 9],
+};
 const config = loadConfig();
 const status = {
     metrics: [],
@@ -43,13 +47,31 @@ const widgetFiles = (readdirSync(widgetsPath) || []).filter(
 
 for (const file of widgetFiles) {
     const name = file.replace(/^(.*)\.mjs$/i, '$1');
-    widgets[name] = { ...await import(join(widgetsPath, file)) };
+    const module = { ...await import(join(widgetsPath, file)) };
+    module.originalLayout = [...module.layout];
+    widgets[name] = module;
     widgets[name].instant = grid.set(
-        widgets[name].layout[0], widgets[name].layout[1],
-        widgets[name].layout[2], widgets[name].layout[3],
-        contrib[widgets[name].type], widgets[name].config
+        module.layout[0], module.layout[1],
+        module.layout[2], module.layout[3],
+        contrib[module.type], module.config
     );
 }
+
+const applyLayouts = (limited) => {
+    for (const key of Object.keys(widgets)) {
+        const widget = widgets[key];
+        const layout = limited && limitedLayouts[key] ? limitedLayouts[key] : widget.originalLayout;
+        widget.instant = grid.set(
+            layout[0], layout[1], layout[2], layout[3],
+            contrib[widget.type], widget.config
+        );
+        if (limited && !limitedLayouts[key]) {
+            widget.instant.hide();
+        } else {
+            widget.instant.show();
+        }
+    }
+};
 
 const mergeMetrics = (existing = [], incoming = []) => {
     const merged = new Map();
@@ -95,8 +117,21 @@ const renderAll = (resp, err) => {
         status.logs.push({ time: new Date(), message: err.message, error: true });
     }
     while (status.logs.length > maxStatus) { status.logs.shift(); }
+
+    const height = screen.height || screen.rows || process.stdout.rows || 0;
+    const limited = height > 0 && height < 30;
+    const visibleWhenLimited = new Set(Object.keys(limitedLayouts));
+    status.ui = status.ui || {};
+    if (status.ui.limited !== limited) {
+        applyLayouts(limited);
+    }
+    status.ui.limited = limited;
+
     for (const key of Object.keys(widgets)) {
-        widgets[key].render(status, widgets[key].instant);
+        const widget = widgets[key];
+        const hidden = limited && !visibleWhenLimited.has(key);
+        if (hidden) { continue; }
+        widget.render(status, widget.instant);
     }
     screen.render();
 };
