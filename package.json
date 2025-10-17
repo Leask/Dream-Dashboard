@@ -6,7 +6,7 @@
   "homepage": "https://github.com/Leask/Dream-Dashboard#readme",
   "main": "dashboard.mjs",
   "bin": {
-    "dashboard": "dashboard.mjs"
+    "dream-dashboard": "dashboard.mjs"
   },
   "engines": {
     "node": ">=18.x"

@@ -41,22 +41,17 @@ npm start --api-key=YOUR_KEY --gateway=192.168.1.1
 node dashboard.mjs --site=prod --verify-ssl=true
 ```
 
-## Install
+## Run via `npx`
+
+```console
+npx dream-dashboard --api-key=YOUR_KEY
+```
+
+## Install & Run
 
 ```console
 npm install
-```
-
-## Run
-
-```console
 npm start
-```
-
-or
-
-```console
-npx dream-dashboard --api-key=YOUTR_KEY
 ```
 
 The dashboard polls the UniFi Network Application every second (mainly `/proxy/network/api/s/<site>/stat/health`) and draws:
