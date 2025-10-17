@@ -52,7 +52,7 @@ npm install
 ```console
 npm start
 # or
-npx dashboard
+npx dream-dashboard
 ```
 
 The dashboard polls the UniFi Network Application every second (mainly `/proxy/network/api/s/<site>/stat/health`) and draws:
