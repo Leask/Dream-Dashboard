@@ -1,4 +1,4 @@
-import { axisTime, getMaxMin } from '../lib/func.mjs';
+import { axisTime } from '../lib/func.mjs';
 
 export const { layout, type, config, render } = {
     layout: [6, 0, 3, 3],
@@ -29,9 +29,6 @@ export const { layout, type, config, render } = {
             x.push(x[0]);
             y.push(y[0]);
         }
-        const [maxY, minY] = getMaxMin(y, false);
-        instant.options.maxY = maxY;
-        instant.options.minY = minY;
         instant.setData([{ title: 'Latency', x, y, style: { line: 'yellow' } }]);
     },
 };

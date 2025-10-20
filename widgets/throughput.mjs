@@ -1,4 +1,4 @@
-import { axisTime, getMaxMin } from '../lib/func.mjs';
+import { axisTime } from '../lib/func.mjs';
 
 const asMbps = (bps = 0) => Number((bps / 1_000_000).toFixed(2));
 
@@ -28,9 +28,6 @@ export const { layout, type, config, render } = {
             ]);
             return;
         }
-        const [maxY, minY] = getMaxMin([...download, ...upload], false);
-        instant.options.maxY = maxY;
-        instant.options.minY = minY;
         instant.setData([
             { title: 'Download', x, y: download, style: { line: 'cyan' } },
             { title: 'Upload', x, y: upload, style: { line: 'magenta' } },
