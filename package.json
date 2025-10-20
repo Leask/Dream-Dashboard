@@ -33,6 +33,6 @@
     "blessed": "^0.1.81",
     "blessed-contrib": "^4.11.0",
     "undici": "^7.16.0",
-    "utilitas": "^1999.1.90"
+    "utilitas": "^1999.1.93"
   }
 }
