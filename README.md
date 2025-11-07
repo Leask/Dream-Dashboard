@@ -1,4 +1,4 @@
-# <img width="30" height="30" alt="dashboard" src="https://github.com/user-attachments/assets/c3c5982f-b8aa-43c5-9dd8-ffb7782097f9" /> UniFi Gateway Dashboard
+# <img width="35" height="35" alt="dashboard" src="https://github.com/user-attachments/assets/c3c5982f-b8aa-43c5-9dd8-ffb7782097f9" /> UniFi Gateway Dashboard
 
 Terminal dashboard for real-time UniFi gateway throughput, latency, infrastructure inventory, and client activity.
 
