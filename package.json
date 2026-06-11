@@ -18,7 +18,8 @@
     "ncuinit": "npm install -g npm-check-updates",
     "updep": "npx npm-check-updates -u && npm install && ( git commit -am 'update dependencies' || true )",
     "gitsync": "git pull && git push",
-    "prepublishOnly": "npm version patch && npm run updep && npm run gitsync"
+    "release:local": "npm version patch && npm run updep && npm run gitsync",
+    "prepublishOnly": "npm test"
   },
   "author": "Leask Wong <i@leaskh.com>",
   "license": "MIT",
