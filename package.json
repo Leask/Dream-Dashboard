@@ -14,7 +14,7 @@
   "scripts": {
     "start": "node --no-deprecation dashboard.mjs",
     "debug": "node --inspect --trace-warnings dashboard.mjs",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test",
     "ncuinit": "npm install -g npm-check-updates",
     "updep": "npx npm-check-updates -u && npm install && ( git commit -am 'update dependencies' || true )",
     "gitsync": "git pull && git push",
