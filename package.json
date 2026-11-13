@@ -35,5 +35,10 @@
     "blessed-contrib": "^4.11.0",
     "undici": "^7.16.0",
     "utilitas": "^2001.1.148"
+  },
+  "overrides": {
+    "lodash": "^4.18.1",
+    "xml2js": "^0.6.2",
+    "ansi-regex@<5.0.1": "^5.0.1"
   }
 }
