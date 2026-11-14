@@ -47,7 +47,14 @@ jobs:
       - name: Bump patch version
         id: version
         run: |
-          version="$(npm version patch -m "chore: release v%s [skip ci]")"
+          set -euo pipefail
+          version="$(npm version patch --no-git-tag-version)"
+          while git show-ref --verify --quiet "refs/tags/${version}"; do
+            version="$(npm version patch --no-git-tag-version)"
+          done
+          git add -- package.json package-lock.json
+          git commit -m "chore: release ${version} [skip ci]"
+          git tag -a "${version}" -m "chore: release ${version} [skip ci]"
           echo "version=${version#v}" >> "${GITHUB_OUTPUT}"
 
       - name: Check package version is unpublished
